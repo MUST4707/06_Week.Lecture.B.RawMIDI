@@ -9,9 +9,18 @@ const midiDataDiv = document.getElementById('midiData');
  * @param {number} byte - The MIDI byte to format.
  * @returns {string} The formatted string with binary, decimal, and hexadecimal values.
  */
-const formatByte = function (byte) {
+const formatBin = function (dataIn) {
     // Convert the byte to binary, decimal, and hexadecimal formats for display
-    return `Bin: ${byte.toString(2).padStart(8, '0')}  Dec: ${byte}  Hex: 0x${byte.toString(16).toUpperCase().padStart(2, '0')}`;
+
+    // return byte.toString(2).padStart(8, '0')}  Dec: ${byte}  Hex: 0x${byte.toString(16).toUpperCase().padStart(2, '0')}`;
+    return dataIn.toString(2).padStart(8, '0')
+};
+
+
+
+const formatHex = function (dataIn) {
+
+    return dataIn.toString(16).toUpperCase().padStart(2, '0')
 };
 
 /**
@@ -21,14 +30,30 @@ const formatByte = function (byte) {
 const onMIDIMessage = function (event) {
     // Start building the output string with a timestamp
     let output = `MIDI Message (timestamp ${event.timeStamp.toFixed(2)}):\n`;
-
+    let msgArray = Array(3);
     // Iterate through each byte of MIDI data and format it
     event.data.forEach(byte => {
-        output += formatByte(byte) + '\n';
+        msgArray.push(byte)
     });
+    output = `
+        <table>
+        <tr>
+           <th>Binary</th>
+            <th>Decimal</th>
+            <th>Hexadecimal</th>
+        </tr>
+        <tr>
+            <td>${formatBin(event.data[0])} ${formatBin(event.data[1])} ${formatBin(event.data[2])}</td>
+            <td>${event.data[0]} ${event.data[1]} ${event.data[2]}</td>
+            <td>${formatHex(event.data[0])} ${formatHex(event.data[1])} ${formatHex(event.data[2])}</td>
+            
+        </tr>
+        
+        </table>
+    `
 
     // Update the text content of the display div with the formatted data
-    midiDataDiv.textContent = output;
+    midiDataDiv.innerHTML = output;
 };
 
 /**
@@ -50,7 +75,7 @@ const onMIDISuccess = function (midiAccess) {
  */
 const onMIDIFailure = function () {
     // Notify the user that MIDI access failed
-    midiDataDiv.textContent = 'Failed to access MIDI devices.';
+    midiDataDiv.innerHTML = `<p>Failed to access MIDI devices.</p>`;
 };
 
 // Request access to MIDI devices from the browser's Web MIDI API
