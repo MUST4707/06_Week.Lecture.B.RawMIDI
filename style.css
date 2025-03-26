@@ -1,0 +1,13 @@
+body {
+    font-family: monospace;
+    background-color: #111;
+    color: #0f0;
+    padding: 20px;
+}
+h1 {
+    color: #0f0;
+}
+.midi-data {
+    margin-top: 20px;
+    white-space: pre;
+}
